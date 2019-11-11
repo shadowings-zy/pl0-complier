@@ -1,0 +1,27 @@
+var x, y, z;
+
+procedure test;
+var a, b, c;
+begin
+    a := 5;
+    b := 7;
+    c := b * a;
+end;
+
+begin
+    x := 4;
+    y := 100;
+
+    if x < y then
+    begin
+        z := y / x;
+        y := x + y;
+    end;
+
+    while x < y do
+    begin
+        x := x + z;
+    end;
+
+    call test;
+end.

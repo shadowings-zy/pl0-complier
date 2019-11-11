@@ -1,0 +1,74 @@
+这是pl0语言中所有语句的翻译方式
+
+====================
+x := 20
+
+LIT 20
+STO level_x address_x
+====================
+
+
+====================
+z := x + y
+
+LOD level_x address_x
+LOD level_y address_y
+OPR +
+STO level_z address_z
+====================
+
+
+====================
+if x < 20 then
+begin
+z := x + y;
+end;
+
+LOD level_x address_x
+LIT 20
+OPR <
+JPC L1
+LOD level_x address_x
+LOD level_y address_y
+OPR +
+STO level_z address_z
+L1: ...
+====================
+
+
+====================
+while x < 20 do
+begin
+	x := x + y
+end;
+
+L1: LOD level_x address_x
+LIT 20
+OPR <
+JPC L2
+LOD level_x address_x
+LOD level_y address_y
+OPR +
+STO level_x address_x
+JMP L1
+L2: ....
+====================
+
+
+====================
+procedure test;
+begin
+    z := x + y;
+end;
+
+call test;
+
+JMP L1
+L2: JMP L3
+L3: LOD level_x address_x
+LOD level_y address_y
+OPR +
+STO level_z address_z
+OPR return
+L1: CAL L2
+====================
