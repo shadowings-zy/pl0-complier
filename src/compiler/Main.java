@@ -8,11 +8,19 @@ import parsing.Declaration;
 import parsing.DeclarationTableParser;
 import parsing.Parser;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
-	public static void main(String[] args) {
-		String sourceCodePath = "/Users/zy/workspace-for-Java/PL0/src/code/test.pl0";  // 源代码地址
+	static String sourcePath = "/src/code/test.pl0"; // 测试代码地址
+	static String testPath = "/src/code/code.pl0code"; // 测试目标代码地址
+
+	public static void main(String[] args) throws IOException {
+		File directory = new File("");// 参数为空
+		String courseFile = directory.getCanonicalPath();
+		String sourceCodePath = courseFile + sourcePath;
+
 		System.out.println("\n==========源代码==========");
 		String sourceCode = SourceCodeFileReader.readFileContent(sourceCodePath, "\n");
 		System.out.println(sourceCode);
@@ -47,8 +55,10 @@ public class Main {
 	 * 导入测试中间代码
 	 * @return code list
 	 */
-	public static ArrayList<Code> importTest() {
-		String testCodePath = "/Users/zy/workspace-for-Java/PL0/src/code/code.pl0code";  // 测试中间代码地址
+	public static ArrayList<Code> importTest() throws IOException {
+		File directory = new File("");// 参数为空
+		String courseFile = directory.getCanonicalPath();
+		String testCodePath = courseFile + testPath;
 		String testCode = SourceCodeFileReader.readFileContent(testCodePath, "\n");
 		String[] testCodeLine = testCode.split("\n");
 		ArrayList<Code> codeList = new ArrayList<Code>();
