@@ -4,6 +4,9 @@ import parsing.Code;
 
 import java.util.ArrayList;
 
+/**
+ * 执行生成的目标代码类
+ */
 public class ExecuteCode {
     private static final int MAX = 1000;
     private static int[] stack = new int[MAX];  // 执行栈

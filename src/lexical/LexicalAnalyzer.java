@@ -79,12 +79,12 @@ public class LexicalAnalyzer {
      * @return 返回匹配的字符
      */
     private static String isNumber(String str, int index) {
-        String tempNum = "";
+        StringBuilder tempNum = new StringBuilder();
         while (index < str.length() && Character.isDigit(str.charAt(index))) {
-            tempNum += str.charAt(index);
+            tempNum.append(str.charAt(index));
             index++;
         }
-        return tempNum;
+        return tempNum.toString();
     }
 
     /**
@@ -119,7 +119,7 @@ public class LexicalAnalyzer {
         String str = filterBlank(input);
         ArrayList<Token> wordToken = new ArrayList<Token>();
         int index = 0;
-        String temp = ""; // 用于缓存ident字符
+        StringBuilder temp = new StringBuilder(); // 用于缓存ident字符
         while (index < str.length()) {
             String keywords = isKeywords(str, index);
             String number = isNumber(str, index);
@@ -127,34 +127,34 @@ public class LexicalAnalyzer {
             String delimiters = isDelimiters(str, index);
             if (keywords.length() != 0) {
                 if (temp.length() != 0) {
-                    wordToken.add(new Token("IDENT", temp, ""));
-                    temp = "";
+                    wordToken.add(new Token("IDENT", temp.toString(), ""));
+                    temp = new StringBuilder();
                 }
                 wordToken.add(new Token(keywords.toUpperCase() + "SYM", "", ""));
                 index += keywords.length();
             } else if (number.length() != 0) {
                 if (temp.length() != 0) {
-                    wordToken.add(new Token("IDENT", temp, ""));
-                    temp = "";
+                    wordToken.add(new Token("IDENT", temp.toString(), ""));
+                    temp = new StringBuilder();
                 }
                 wordToken.add(new Token("NUMBER", "", number));
                 index += number.length();
             } else if (operator.length() != 0) {
                 if (temp.length() != 0) {
-                    wordToken.add(new Token("IDENT", temp, ""));
-                    temp = "";
+                    wordToken.add(new Token("IDENT", temp.toString(), ""));
+                    temp = new StringBuilder();
                 }
                 wordToken.add(new Token("SYM_" + operator, "", ""));
                 index += operator.length();
             } else if (delimiters.length() != 0) {
                 if (temp.length() != 0) {
-                    wordToken.add(new Token("IDENT", temp, ""));
-                    temp = "";
+                    wordToken.add(new Token("IDENT", temp.toString(), ""));
+                    temp = new StringBuilder();
                 }
                 wordToken.add(new Token("SYM_" + delimiters, "", ""));
                 index += delimiters.length();
             } else {
-                temp += str.charAt(index);
+                temp.append(str.charAt(index));
                 index++;
             }
         }

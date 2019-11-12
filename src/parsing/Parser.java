@@ -109,48 +109,16 @@ public class Parser {
             Token next = getNext(tokenList);
             if (next != null && next.getSym().equals("SYM_+")) {
                 // 如 x := x + y;
-                Token second = getNext(tokenList);
-                int secondIndex = getItemIndexInDeclarationList(second, declarationList);
-                Token end = getNext(tokenList);
-                if (second != null && end != null && end.getSym().equals("SYM_;")) {
-                    gen("LOD", declarationList.get(firstIndex).getLevel(), declarationList.get(firstIndex).getAdr());
-                    gen("LOD", declarationList.get(secondIndex).getLevel(), declarationList.get(secondIndex).getAdr());
-                    gen("OPR", "0", "2");
-                    gen("STO", left.getLevel(), left.getAdr());
-                }
+                generateOperatorCode(tokenList, declarationList, left, firstIndex, "2");
             } else if (next != null && next.getSym().equals("SYM_-")) {
                 // 如 x := x - y
-                Token second = getNext(tokenList);
-                int secondIndex = getItemIndexInDeclarationList(second, declarationList);
-                Token end = getNext(tokenList);
-                if (second != null && end != null && end.getSym().equals("SYM_;")) {
-                    gen("LOD", declarationList.get(firstIndex).getLevel(), declarationList.get(firstIndex).getAdr());
-                    gen("LOD", declarationList.get(secondIndex).getLevel(), declarationList.get(secondIndex).getAdr());
-                    gen("OPR", "0", "3");
-                    gen("STO", left.getLevel(), left.getAdr());
-                }
+                generateOperatorCode(tokenList, declarationList, left, firstIndex, "3");
             } else if (next != null && next.getSym().equals("SYM_*")) {
                 // 如 x := x * y
-                Token second = getNext(tokenList);
-                int secondIndex = getItemIndexInDeclarationList(second, declarationList);
-                Token end = getNext(tokenList);
-                if (second != null && end != null && end.getSym().equals("SYM_;")) {
-                    gen("LOD", declarationList.get(firstIndex).getLevel(), declarationList.get(firstIndex).getAdr());
-                    gen("LOD", declarationList.get(secondIndex).getLevel(), declarationList.get(secondIndex).getAdr());
-                    gen("OPR", "0", "4");
-                    gen("STO", left.getLevel(), left.getAdr());
-                }
+                generateOperatorCode(tokenList, declarationList, left, firstIndex, "4");
             } else if (next != null && next.getSym().equals("SYM_/")) {
                 // 如 x := x / y
-                Token second = getNext(tokenList);
-                int secondIndex = getItemIndexInDeclarationList(second, declarationList);
-                Token end = getNext(tokenList);
-                if (second != null && end != null && end.getSym().equals("SYM_;")) {
-                    gen("LOD", declarationList.get(firstIndex).getLevel(), declarationList.get(firstIndex).getAdr());
-                    gen("LOD", declarationList.get(secondIndex).getLevel(), declarationList.get(secondIndex).getAdr());
-                    gen("OPR", "0", "5");
-                    gen("STO", left.getLevel(), left.getAdr());
-                }
+                generateOperatorCode(tokenList, declarationList, left, firstIndex, "5");
             } else if (next != null && next.getSym().equals("SYM_;")) {
                 // 如 x := y;
                 gen("LOD", declarationList.get(firstIndex).getLevel(), declarationList.get(firstIndex).getAdr());
@@ -170,8 +138,8 @@ public class Parser {
     /**
      * 翻译call
      *
-     * @param tokenList         token列表
-     * @param declarationList   声明列表
+     * @param tokenList       token列表
+     * @param declarationList 声明列表
      */
     private static void callParser(ArrayList<Token> tokenList, ArrayList<Declaration> declarationList) {
         Token ident = getNext(tokenList);
@@ -317,6 +285,27 @@ public class Parser {
             gen("LIT", "0", token.getNum());
         } else {
             PL0Error.log(12);
+        }
+    }
+
+    /**
+     * 根据操作符生成目标代码
+     *
+     * @param tokenList       token列表
+     * @param declarationList 声明列表
+     * @param left            操作符左面的声明
+     * @param firstIndex      :=左面的声明
+     * @param offset          操作符的偏移量
+     */
+    private static void generateOperatorCode(ArrayList<Token> tokenList, ArrayList<Declaration> declarationList, Declaration left, int firstIndex, String offset) {
+        Token second = getNext(tokenList);
+        int secondIndex = getItemIndexInDeclarationList(second, declarationList);
+        Token end = getNext(tokenList);
+        if (second != null && end != null && end.getSym().equals("SYM_;")) {
+            gen("LOD", declarationList.get(firstIndex).getLevel(), declarationList.get(firstIndex).getAdr());
+            gen("LOD", declarationList.get(secondIndex).getLevel(), declarationList.get(secondIndex).getAdr());
+            gen("OPR", "0", offset);
+            gen("STO", left.getLevel(), left.getAdr());
         }
     }
 

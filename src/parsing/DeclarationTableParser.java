@@ -61,14 +61,7 @@ public class DeclarationTableParser {
                 Declaration constDeclaration = new Declaration(identName, "CONSTANT", "", "", "", -1, -1);
 
                 // 检测是否对常量进行了赋值
-                tokenListIndex++;
-                if (tokenList.get(tokenListIndex).getSym().equals("SYM_=") && tokenList.get(tokenListIndex + 1).getSym().equals("NUMBER")) {
-                    constDeclaration.setVal(tokenList.get(tokenListIndex + 1).getNum());
-                    declarationList.add(constDeclaration);
-                    tokenListIndex += 2;
-                } else {
-                    declarationList.add(constDeclaration);
-                }
+                checkAndAddDeclaration(tokenList, constDeclaration);
 
                 // 若读取到分号，则结束，若读取到逗号，则什么都不做，若读取到其他，则抛异常
                 if (tokenList.get(tokenListIndex).getSym().equals("SYM_;")) {
@@ -98,14 +91,7 @@ public class DeclarationTableParser {
                 Declaration varDeclaration = new Declaration(identName, "VARIABLE", "", level + "", (adr++) + "", -1, -1);
 
                 // 检测是否对变量进行了赋值
-                tokenListIndex++;
-                if (tokenList.get(tokenListIndex).getSym().equals("SYM_=") && tokenList.get(tokenListIndex + 1).getSym().equals("NUMBER")) {
-                    varDeclaration.setVal(tokenList.get(tokenListIndex + 1).getNum());
-                    declarationList.add(varDeclaration);
-                    tokenListIndex += 2;
-                } else {
-                    declarationList.add(varDeclaration);
-                }
+                checkAndAddDeclaration(tokenList, varDeclaration);
 
                 // 若读取到分号，则结束，若读取到逗号，则什么都不做，若读取到其他，则抛异常
                 if (tokenList.get(tokenListIndex).getSym().equals("SYM_;")) {
@@ -158,6 +144,22 @@ public class DeclarationTableParser {
             } else {
                 PL0Error.log(7);
             }
+        }
+    }
+
+    /**
+     * 检查是否对某个变量/常量进行了赋值，即判断x := 20;
+     * @param tokenList     token列表
+     * @param declaration   声明
+     */
+    private static void checkAndAddDeclaration(ArrayList<Token> tokenList, Declaration declaration) {
+        tokenListIndex++;
+        if (tokenList.get(tokenListIndex).getSym().equals("SYM_=") && tokenList.get(tokenListIndex + 1).getSym().equals("NUMBER")) {
+            declaration.setVal(tokenList.get(tokenListIndex + 1).getNum());
+            declarationList.add(declaration);
+            tokenListIndex += 2;
+        } else {
+            declarationList.add(declaration);
         }
     }
 }
